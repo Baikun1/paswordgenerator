@@ -3,7 +3,7 @@ import string
 
 class PasswordGenerator:
     def __init__(self, length=12, include_special_chars=True, min_digits=0, min_uppercase=0, min_lowercase=0, min_special_chars=0):
-        self.length = length
+        self.set_length(length)
         self.include_special_chars = include_special_chars
         self.min_digits = min_digits
         self.min_uppercase = min_uppercase
@@ -18,7 +18,6 @@ class PasswordGenerator:
             raise ValueError("Password length is too short for the given requirements.")
 
         password = []
-
         password.extend(random.choices(string.digits, k=self.min_digits))
         password.extend(random.choices(string.ascii_uppercase, k=self.min_uppercase))
         password.extend(random.choices(string.ascii_lowercase, k=self.min_lowercase))
@@ -26,9 +25,10 @@ class PasswordGenerator:
             password.extend(random.choices(string.punctuation, k=self.min_special_chars))
 
         remaining_length = self.length - len(password)
-        password.extend(random.choices(self.characters, k=remaining_length))
-        random.shuffle(password)
+        if remaining_length > 0:
+            password.extend(random.choices(self.characters, k=remaining_length))
         
+        random.shuffle(password)
         return ''.join(password)
 
     def set_length(self, length):
